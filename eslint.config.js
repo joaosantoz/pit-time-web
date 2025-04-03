@@ -24,6 +24,20 @@ module.exports = tseslint.config(
           prefix: 'app',
           style: 'kebab-case'
         }
+      ],
+      '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'explicit' }],
+      '@typescript-eslint/array-type': ['off'],
+      '@typescript-eslint/typedef': [
+        'error',
+        {
+          propertyDeclaration: true,
+          memberVariableDeclaration: true,
+          arrowParameter: false,
+          parameter: false,
+          variableDeclaration: false,
+          variableDeclarationIgnoreFunction: true,
+          staticProperty: false
+        }
       ]
     }
   },
