@@ -62,9 +62,6 @@ module.exports = function (config) {
     },
 
     reporters: ['spec', 'progress', 'kjhtml', 'coverage'],
-    mochaReporter: {
-      output: 'autowatch'
-    },
     browsers: ['Chrome'],
     restartOnFileChange: true
   });
