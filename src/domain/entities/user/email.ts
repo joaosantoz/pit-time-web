@@ -11,25 +11,27 @@ export class Email {
   public static create(email: string): Email {
     Email.validateInput(email);
 
-    return new Email(email.trim());
+    return new Email(email);
   }
 
   private static validateInput(email: string): void {
-    const trimmedEmail = email.trim();
+    if (email.includes(' ')) {
+      throw new DomainException('Email cannot contain spaces.', ExceptionCode.INVALID_EMAIL);
+    }
 
-    if (!trimmedEmail || trimmedEmail.length === 0) {
+    if (!email || email.length === 0) {
       throw new DomainException('Email cannot be empty.', ExceptionCode.INVALID_EMAIL);
     }
 
-    if (trimmedEmail.length < EmailLength.MIN) {
+    if (email.length < EmailLength.MIN) {
       throw new DomainException(`Email must be at least ${EmailLength.MIN} characters.`, ExceptionCode.INVALID_EMAIL);
     }
 
-    if (trimmedEmail.length > EmailLength.MAX) {
+    if (email.length > EmailLength.MAX) {
       throw new DomainException(`Email must be at most ${EmailLength.MAX} characters.`, ExceptionCode.INVALID_EMAIL);
     }
 
-    if (!Email.VALIDATION_REGEX.test(trimmedEmail)) {
+    if (!Email.VALIDATION_REGEX.test(email)) {
       throw new DomainException('Invalid Email.', ExceptionCode.INVALID_EMAIL);
     }
   }

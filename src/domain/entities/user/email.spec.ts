@@ -15,8 +15,14 @@ describe('Email', () => {
       expect(() => Email.create('')).toThrowMatching(createDomainExceptionMatcher('Email cannot be empty.', ExceptionCode.INVALID_EMAIL));
     });
 
+    it('should throw for email containing whitespaces', () => {
+      expect(() => Email.create(' user@example.com')).toThrowMatching(
+        createDomainExceptionMatcher('Email cannot contain spaces.', ExceptionCode.INVALID_EMAIL)
+      );
+    });
+
     it('should throw for whitespace-only email', () => {
-      expect(() => Email.create('   ')).toThrowMatching(createDomainExceptionMatcher('Email cannot be empty.', ExceptionCode.INVALID_EMAIL));
+      expect(() => Email.create('   ')).toThrowMatching(createDomainExceptionMatcher('Email cannot contain spaces.', ExceptionCode.INVALID_EMAIL));
     });
 
     it('should throw for email missing local part ("@example.com")', () => {
@@ -85,11 +91,6 @@ describe('Email', () => {
   describe('getValue()', () => {
     it('should return original email value', () => {
       const email = Email.create('test@domain.com');
-      expect(email.getValue()).toBe('test@domain.com');
-    });
-
-    it('should return trimmed value when created with spaces', () => {
-      const email = Email.create('  test@domain.com  ');
       expect(email.getValue()).toBe('test@domain.com');
     });
   });

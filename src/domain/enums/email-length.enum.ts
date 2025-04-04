@@ -1,4 +1,4 @@
 export enum EmailLength {
   MIN = 5,
-  MAX = 254
+  MAX = 255
 }
