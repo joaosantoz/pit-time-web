@@ -1,4 +1,4 @@
-import { DomainException } from '@domain/exceptions/domain-exception';
+import { DomainException } from '@domain/exceptions/domain.exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { PasswordLength } from '@domain/enums/password-length.enum';
 

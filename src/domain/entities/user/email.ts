@@ -1,4 +1,4 @@
-import { DomainException } from '@domain/exceptions/domain-exception';
+import { DomainException } from '@domain/exceptions/domain.exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { EmailLength } from '@domain/enums/email-length.enum';
 

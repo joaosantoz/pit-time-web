@@ -3,7 +3,7 @@ import { Email } from '@domain/entities/user/email';
 import { Role } from '@domain/enums/role.enum';
 import { User } from '@domain/entities/user/user';
 import { Password } from '@domain/entities/user/password';
-import { DomainException } from '@domain/exceptions/domain-exception';
+import { DomainException } from '@domain/exceptions/domain.exception';
 
 describe('User', () => {
   const validName = Name.create('User Name');

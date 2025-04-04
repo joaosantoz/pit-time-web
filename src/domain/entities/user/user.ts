@@ -1,7 +1,7 @@
 import { Email } from '@domain/entities/user/email';
 import { Role } from '@domain/enums/role.enum';
 import { Password } from '@domain/entities/user/password';
-import { DomainException } from '@domain/exceptions/domain-exception';
+import { DomainException } from '@domain/exceptions/domain.exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { Name } from '@domain/entities/user/name';
 
