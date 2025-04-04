@@ -12,15 +12,19 @@ export class Password {
   }
 
   private static validateInput(password: string): void {
-    if (!password || password.trim().length === 0) {
+    if (password.includes(' ')) {
+      throw new DomainException('Password cannot contain spaces.', ExceptionCode.INVALID_PASSWORD);
+    }
+
+    if (!password || password.length === 0) {
       throw new DomainException('Password cannot be empty.', ExceptionCode.INVALID_PASSWORD);
     }
 
-    if (password.trim().length < PasswordLength.MIN) {
+    if (password.length < PasswordLength.MIN) {
       throw new DomainException(`Password must be at least ${PasswordLength.MIN} characters.`, ExceptionCode.INVALID_PASSWORD);
     }
 
-    if (password.trim().length > PasswordLength.MAX) {
+    if (password.length > PasswordLength.MAX) {
       throw new DomainException(`Password must be at most ${PasswordLength.MAX} characters.`, ExceptionCode.INVALID_PASSWORD);
     }
 
@@ -38,10 +42,6 @@ export class Password {
 
     if (!/[!@#$%^&*]/.test(password)) {
       throw new DomainException('Password must contain at least one special character.', ExceptionCode.INVALID_PASSWORD);
-    }
-
-    if (password.includes(' ')) {
-      throw new DomainException('Password cannot contain spaces.', ExceptionCode.INVALID_PASSWORD);
     }
   }
 

@@ -15,8 +15,16 @@ describe('Password', () => {
       expect(() => Password.create('')).toThrowMatching(createDomainExceptionMatcher('Password cannot be empty.', ExceptionCode.INVALID_PASSWORD));
     });
 
+    it('should throw for passwords containing whitespace', () => {
+      expect(() => Password.create(' Valid1@Password')).toThrowMatching(
+        createDomainExceptionMatcher('Password cannot contain spaces.', ExceptionCode.INVALID_PASSWORD)
+      );
+    });
+
     it('should throw for whitespace-only password', () => {
-      expect(() => Password.create('   ')).toThrowMatching(createDomainExceptionMatcher('Password cannot be empty.', ExceptionCode.INVALID_PASSWORD));
+      expect(() => Password.create('   ')).toThrowMatching(
+        createDomainExceptionMatcher('Password cannot contain spaces.', ExceptionCode.INVALID_PASSWORD)
+      );
     });
 
     it(`should throw for password shorter than ${PasswordLength.MIN} characters`, () => {
