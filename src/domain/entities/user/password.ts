@@ -1,6 +1,7 @@
-import { DomainException } from '@domain/exceptions/domain.exception';
-import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { PasswordLength } from '@domain/enums/password-length.enum';
+import { DomainValidationError } from '@domain/exceptions/domain-validation.error';
+import { PasswordMessage } from '@domain/exceptions/messages/password-message';
+import { ValidationMessage } from '@domain/exceptions/messages/validation-message';
 
 export class Password {
   private constructor(private readonly value: string) {}
@@ -13,35 +14,35 @@ export class Password {
 
   private static validateInput(password: string): void {
     if (password.includes(' ')) {
-      throw new DomainException('Password cannot contain spaces.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(ValidationMessage.NO_SPACES(this.name));
     }
 
     if (!password || password.length === 0) {
-      throw new DomainException('Password cannot be empty.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
     }
 
     if (password.length < PasswordLength.MIN) {
-      throw new DomainException(`Password must be at least ${PasswordLength.MIN} characters.`, ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, PasswordLength.MIN));
     }
 
     if (password.length > PasswordLength.MAX) {
-      throw new DomainException(`Password must be at most ${PasswordLength.MAX} characters.`, ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, PasswordLength.MAX));
     }
 
     if (!/[a-z]/.test(password)) {
-      throw new DomainException('Password must contain at least one lowercase letter.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(PasswordMessage.LOWERCASE);
     }
 
     if (!/[A-Z]/.test(password)) {
-      throw new DomainException('Password must contain at least one uppercase letter.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(PasswordMessage.UPPERCASE);
     }
 
     if (!/[0-9]/.test(password)) {
-      throw new DomainException('Password must contain at least one digit.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(PasswordMessage.DIGIT);
     }
 
     if (!/[!@#$%^&*]/.test(password)) {
-      throw new DomainException('Password must contain at least one special character.', ExceptionCode.INVALID_PASSWORD);
+      throw new DomainValidationError(PasswordMessage.SPECIAL_CHARACTER);
     }
   }
 

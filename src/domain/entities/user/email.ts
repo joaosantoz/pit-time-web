@@ -1,6 +1,6 @@
-import { DomainException } from '@domain/exceptions/domain.exception';
-import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { EmailLength } from '@domain/enums/email-length.enum';
+import { DomainValidationError } from '@domain/exceptions/domain-validation.error';
+import { ValidationMessage } from '@domain/exceptions/messages/validation-message';
 
 export class Email {
   private static VALIDATION_REGEX =
@@ -16,23 +16,23 @@ export class Email {
 
   private static validateInput(email: string): void {
     if (email.includes(' ')) {
-      throw new DomainException('Email cannot contain spaces.', ExceptionCode.INVALID_EMAIL);
+      throw new DomainValidationError(ValidationMessage.NO_SPACES(this.name));
     }
 
     if (!email || email.length === 0) {
-      throw new DomainException('Email cannot be empty.', ExceptionCode.INVALID_EMAIL);
+      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
     }
 
     if (email.length < EmailLength.MIN) {
-      throw new DomainException(`Email must be at least ${EmailLength.MIN} characters.`, ExceptionCode.INVALID_EMAIL);
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, EmailLength.MIN));
     }
 
     if (email.length > EmailLength.MAX) {
-      throw new DomainException(`Email must be at most ${EmailLength.MAX} characters.`, ExceptionCode.INVALID_EMAIL);
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, EmailLength.MAX));
     }
 
     if (!Email.VALIDATION_REGEX.test(email)) {
-      throw new DomainException('Invalid Email.', ExceptionCode.INVALID_EMAIL);
+      throw new DomainValidationError(ValidationMessage.INVALID(this.name));
     }
   }
 

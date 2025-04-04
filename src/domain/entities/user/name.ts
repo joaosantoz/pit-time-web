@@ -1,6 +1,7 @@
-import { DomainException } from '@domain/exceptions/domain.exception';
-import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { NameLength } from '@domain/enums/name-length.enum';
+import { DomainValidationError } from '@domain/exceptions/domain-validation.error';
+import { PasswordLength } from '@domain/enums/password-length.enum';
+import { ValidationMessage } from '@domain/exceptions/messages/validation-message';
 
 export class Name {
   private constructor(private readonly value: string) {}
@@ -13,15 +14,15 @@ export class Name {
 
   private static validateInput(name: string): void {
     if (!name.trim() || name.trim().length === 0) {
-      throw new DomainException('Name cannot be empty.', ExceptionCode.INVALID_NAME);
+      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
     }
 
     if (name.length < NameLength.MIN) {
-      throw new DomainException(`Name must be at least ${NameLength.MIN} characters.`, ExceptionCode.INVALID_NAME);
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, PasswordLength.MIN));
     }
 
     if (name.length > NameLength.MAX) {
-      throw new DomainException(`Name must be at most ${NameLength.MAX} characters.`, ExceptionCode.INVALID_NAME);
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, PasswordLength.MAX));
     }
   }
 

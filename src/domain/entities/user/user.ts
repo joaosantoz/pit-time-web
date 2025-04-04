@@ -2,8 +2,8 @@ import { Email } from '@domain/entities/user/email';
 import { Role } from '@domain/enums/role.enum';
 import { Password } from '@domain/entities/user/password';
 import { DomainException } from '@domain/exceptions/domain.exception';
-import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { Name } from '@domain/entities/user/name';
+import { DomainMessage } from '@domain/exceptions/messages/domain-message';
 
 export class User {
   private constructor(
@@ -16,11 +16,11 @@ export class User {
 
   public static create(name: Name, email: Email, password: Password, role: Role, id?: number): User {
     if (!Object.values(Role).includes(role)) {
-      throw new DomainException('Invalid role.', ExceptionCode.INVALID_ROLE);
+      throw new DomainException(DomainMessage.INVALID_ROLE);
     }
 
     if (typeof id === 'number' && id <= 0) {
-      throw new DomainException('Invalid ID.', ExceptionCode.INVALID_ID);
+      throw new DomainException(DomainMessage.INVALID_ID);
     }
 
     return new User(name, email, password, role, id);
@@ -32,6 +32,10 @@ export class User {
       [Role.MANAGER]: [Role.MANAGER, Role.EMPLOYEE],
       [Role.EMPLOYEE]: [Role.EMPLOYEE]
     };
+
+    if (!requiredRole || !Object.values(Role).includes(requiredRole)) {
+      throw new DomainException(DomainMessage.INVALID_ROLE);
+    }
 
     return permissions[this.role].includes(requiredRole);
   }

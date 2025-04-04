@@ -71,6 +71,24 @@ describe('User', () => {
       expect(employee.hasPermission(Role.MANAGER)).toBe(false);
       expect(employee.hasPermission(Role.ADMIN)).toBe(false);
     });
+
+    it('should throw when requiredRole is invalid', () => {
+      const user = User.create(validName, validEmail, validPassword, Role.EMPLOYEE);
+      const invalidRole = 'INVALID_ROLE' as Role;
+
+      expect(() => {
+        user.hasPermission(invalidRole);
+      }).toThrowError(DomainException);
+    });
+
+    it('should throw when requiredRole is undefined', () => {
+      const user = User.create(validName, validEmail, validPassword, Role.EMPLOYEE);
+      const undefinedRole = undefined as unknown as Role;
+
+      expect(() => {
+        user.hasPermission(undefinedRole);
+      }).toThrowError(DomainException);
+    });
   });
 
   describe('withId', () => {
