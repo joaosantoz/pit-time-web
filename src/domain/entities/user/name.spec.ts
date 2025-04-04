@@ -1,5 +1,4 @@
 import { Name } from '@domain/entities/user/name';
-import { DomainException } from '@domain/exceptions/domain-exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
 import { NameLength } from '@domain/enums/name-length.enum';
 import { createDomainExceptionMatcher } from '../../../main/utils/testing/domain-exception-matcher.util';
