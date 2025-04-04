@@ -4,7 +4,6 @@ import { Role } from '@domain/enums/role.enum';
 import { User } from '@domain/entities/user/user';
 import { Password } from '@domain/entities/user/password';
 import { DomainException } from '@domain/exceptions/domain.exception';
-import { DomainMessage } from '@domain/exceptions/messages/domain-message';
 
 describe('User', () => {
   const validName = Name.create('User Name');
