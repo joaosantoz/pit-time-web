@@ -1,57 +1,106 @@
 import { Email } from '@domain/entities/user/email';
-import { DomainException } from '@domain/exceptions/domain-exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
+import { createDomainExceptionMatcher } from '../../../main/utils/testing/domain-exception-matcher.util';
+import { EmailLength } from '@domain/enums/email-length.enum';
 
 describe('Email', () => {
-  it('should create an Email instance with a valid email', () => {
-    const validEmail = 'user@example.com';
-    const email: Email = Email.create(validEmail);
+  describe('create()', () => {
+    it('should create instance with valid email "user@example.com"', () => {
+      const email = Email.create('user@example.com');
+      expect(email).toBeInstanceOf(Email);
+      expect(email.getValue()).toBe('user@example.com');
+    });
 
-    expect(email).toBeInstanceOf(Email);
-    expect(email.getValue()).toBe(validEmail);
-  });
+    it('should throw for empty email', () => {
+      expect(() => Email.create('')).toThrowMatching(createDomainExceptionMatcher('Email cannot be empty.', ExceptionCode.INVALID_EMAIL));
+    });
 
-  it('should throw DomainException for invalid email format', () => {
-    const testCases = [
-      { email: 'user@.com', expectedMessage: 'Invalid Email.' },
-      { email: '@example.com', expectedMessage: 'Invalid Email.' },
-      { email: 'user@example', expectedMessage: 'Invalid Email.' },
-      { email: 'user@example..com', expectedMessage: 'Invalid Email.' },
-      { email: ' ', expectedMessage: 'Email cannot be empty.' },
-      { email: '', expectedMessage: 'Email cannot be empty.' }
-    ];
+    it('should throw for whitespace-only email', () => {
+      expect(() => Email.create('   ')).toThrowMatching(createDomainExceptionMatcher('Email cannot be empty.', ExceptionCode.INVALID_EMAIL));
+    });
 
-    testCases.forEach(({ email, expectedMessage }) => {
-      expect(() => Email.create(email)).toThrowMatching((error) => {
-        return error instanceof DomainException && error.code === ExceptionCode.INVALID_EMAIL && error.message === expectedMessage;
-      });
+    it('should throw for email missing local part ("@example.com")', () => {
+      expect(() => Email.create('@example.com')).toThrowMatching(createDomainExceptionMatcher('Invalid Email.', ExceptionCode.INVALID_EMAIL));
+    });
+
+    it('should throw for email missing domain ("user@")', () => {
+      expect(() => Email.create('user@')).toThrowMatching(createDomainExceptionMatcher('Invalid Email.', ExceptionCode.INVALID_EMAIL));
+    });
+
+    it('should throw for email with double dots ("user@example..com")', () => {
+      expect(() => Email.create('user@example..com')).toThrowMatching(createDomainExceptionMatcher('Invalid Email.', ExceptionCode.INVALID_EMAIL));
+    });
+
+    it('should throw for email with invalid domain ("user@.com")', () => {
+      expect(() => Email.create('user@.com')).toThrowMatching(createDomainExceptionMatcher('Invalid Email.', ExceptionCode.INVALID_EMAIL));
+    });
+
+    it(`should throw for email with less than ${EmailLength.MIN} characters`, () => {
+      const shortAndInvalidEmail = 'a@b.';
+
+      expect(() => Email.create(shortAndInvalidEmail)).toThrowMatching(
+        createDomainExceptionMatcher(`Email must be at least ${EmailLength.MIN} characters.`, ExceptionCode.INVALID_EMAIL)
+      );
+    });
+
+    it(`should throw for email with more than ${EmailLength.MAX} characters`, () => {
+      const longEmail = 'a'.repeat(EmailLength.MAX / 2) + '@' + 'b'.repeat(EmailLength.MAX / 2) + '.c';
+
+      expect(() => Email.create(longEmail)).toThrowMatching(
+        createDomainExceptionMatcher(`Email must be at most ${EmailLength.MAX} characters.`, ExceptionCode.INVALID_EMAIL)
+      );
     });
   });
 
-  it('should accept valid email formats', () => {
-    const testCases = [
-      'user@example.com',
-      'firstname.lastname@example.com',
-      'user+tag@example.com',
-      'user@sub.domain.com',
-      'user@domain.com.br',
-      '123456@example.com',
-      'user@example.io',
-      'firstname-lastname@example.com'
-    ];
+  describe('valid formats', () => {
+    it('should accept email with dot in local part ("firstname.lastname@example.com")', () => {
+      expect(() => Email.create('firstname.lastname@example.com')).not.toThrow();
+    });
 
-    testCases.forEach((email) => {
-      expect(() => {
-        const emailInstance = Email.create(email);
-        expect(emailInstance.getValue()).toBe(email.trim());
-      }).not.toThrow();
+    it('should accept email with plus tag ("user+tag@example.com")', () => {
+      expect(() => Email.create('user+tag@example.com')).not.toThrow();
+    });
+
+    it('should accept email with subdomain ("user@sub.domain.com")', () => {
+      expect(() => Email.create('user@sub.domain.com')).not.toThrow();
+    });
+
+    it('should accept email with country code TLD ("user@domain.com.br")', () => {
+      expect(() => Email.create('user@domain.com.br')).not.toThrow();
+    });
+
+    it('should accept numeric local part ("123456@example.com")', () => {
+      expect(() => Email.create('123456@example.com')).not.toThrow();
+    });
+
+    it('should accept new TLDs ("user@example.io")', () => {
+      expect(() => Email.create('user@example.io')).not.toThrow();
+    });
+
+    it('should accept hyphen in local part ("firstname-lastname@example.com")', () => {
+      expect(() => Email.create('firstname-lastname@example.com')).not.toThrow();
     });
   });
 
-  it('should return the raw email value via getValue()', () => {
-    const validEmail = 'test@domain.com';
-    const email: Email = Email.create(validEmail);
+  describe('getValue()', () => {
+    it('should return original email value', () => {
+      const email = Email.create('test@domain.com');
+      expect(email.getValue()).toBe('test@domain.com');
+    });
 
-    expect(email.getValue()).toBe(validEmail);
+    it('should return trimmed value when created with spaces', () => {
+      const email = Email.create('  test@domain.com  ');
+      expect(email.getValue()).toBe('test@domain.com');
+    });
+  });
+
+  describe('boundary cases', () => {
+    it('should accept email with minimum valid length ("a@b.c")', () => {
+      expect(() => Email.create('a@b.c')).not.toThrow();
+    });
+
+    it('should accept email with multiple subdomains ("user@a.b.c.d.com")', () => {
+      expect(() => Email.create('user@a.b.c.d.com')).not.toThrow();
+    });
   });
 });
