@@ -23,7 +23,7 @@ describe('Password', () => {
     });
 
     it(`should throw for password shorter than ${PasswordLength.MIN} characters`, () => {
-      expect(() => Password.create('A1@b')).toThrowError(DomainValidationError);
+      expect(() => Password.create('W7@k')).toThrowError(DomainValidationError);
     });
 
     it(`should throw for password longer than ${PasswordLength.MAX} characters`, () => {
