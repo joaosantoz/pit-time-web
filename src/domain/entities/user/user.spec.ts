@@ -4,6 +4,7 @@ import { Role } from '@domain/enums/role.enum';
 import { User } from '@domain/entities/user/user';
 import { Password } from '@domain/entities/user/password';
 import { DomainException } from '@domain/exceptions/domain.exception';
+import { DomainMessage } from '@domain/exceptions/messages/domain-message';
 
 describe('User', () => {
   const validName = Name.create('User Name');
@@ -12,6 +13,20 @@ describe('User', () => {
   const validRole = Role.EMPLOYEE;
 
   describe('create()', () => {
+    describe('required fields validation', () => {
+      it('should throw when name is not provided', () => {
+        expect(() => User.create(null as any, validEmail, validPassword, Role.EMPLOYEE)).toThrowError(DomainException);
+      });
+
+      it('should throw when email is not provided', () => {
+        expect(() => User.create(validName, null as any, validPassword, Role.EMPLOYEE)).toThrowError(DomainException);
+      });
+
+      it('should throw when password is not provided', () => {
+        expect(() => User.create(validName, validEmail, null as any, Role.EMPLOYEE)).toThrowError(DomainException);
+      });
+    });
+
     it('should create a valid user', () => {
       const validUser = User.create(validName, validEmail, validPassword, validRole);
 

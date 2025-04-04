@@ -12,7 +12,11 @@ export class User {
     private readonly password: Password,
     private readonly role: Role,
     private readonly id?: number
-  ) {}
+  ) {
+    if ([name, email, password].some((field) => !field)) {
+      throw new DomainException(DomainMessage.USER_REQUIRED_FIELDS);
+    }
+  }
 
   public static create(name: Name, email: Email, password: Password, role: Role, id?: number): User {
     if (!Object.values(Role).includes(role)) {
