@@ -1,8 +1,9 @@
 import { DomainException } from '@domain/exceptions/domain-exception';
 import { ExceptionCode } from '@domain/enums/exception-code.enum';
+import { EmailLength } from '@domain/enums/email-length.enum';
 
 export class Email {
-  static VALIDATION_REGEX: RegExp =
+  private static VALIDATION_REGEX =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
   private constructor(private readonly value: string) {}
@@ -10,7 +11,7 @@ export class Email {
   public static create(email: string): Email {
     Email.validateInput(email);
 
-    return new Email(email);
+    return new Email(email.trim());
   }
 
   private static validateInput(email: string): void {
@@ -18,6 +19,14 @@ export class Email {
 
     if (!trimmedEmail || trimmedEmail.length === 0) {
       throw new DomainException('Email cannot be empty.', ExceptionCode.INVALID_EMAIL);
+    }
+
+    if (trimmedEmail.length < EmailLength.MIN) {
+      throw new DomainException(`Email must be at least ${EmailLength.MIN} characters.`, ExceptionCode.INVALID_EMAIL);
+    }
+
+    if (trimmedEmail.length > EmailLength.MAX) {
+      throw new DomainException(`Email must be at most ${EmailLength.MAX} characters.`, ExceptionCode.INVALID_EMAIL);
     }
 
     if (!Email.VALIDATION_REGEX.test(trimmedEmail)) {
