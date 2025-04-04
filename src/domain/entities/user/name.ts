@@ -1,6 +1,5 @@
 import { NameLength } from '@domain/enums/name-length.enum';
 import { DomainValidationError } from '@domain/exceptions/domain-validation.error';
-import { PasswordLength } from '@domain/enums/password-length.enum';
 import { ValidationMessage } from '@domain/exceptions/messages/validation-message';
 
 export class Name {
@@ -18,11 +17,11 @@ export class Name {
     }
 
     if (name.length < NameLength.MIN) {
-      throw new DomainValidationError(ValidationMessage.MIN_LENGTH('Name', PasswordLength.MIN));
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH('Name', NameLength.MIN));
     }
 
     if (name.length > NameLength.MAX) {
-      throw new DomainValidationError(ValidationMessage.MAX_LENGTH('Name', PasswordLength.MAX));
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH('Name', NameLength.MAX));
     }
   }
 
