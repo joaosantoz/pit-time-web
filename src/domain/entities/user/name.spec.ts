@@ -57,7 +57,7 @@ describe('Name', () => {
     it('should preserve whitespace between words', () => {
       const nameWithSpaces = '  Jane   Smith  ';
       const name = Name.create(nameWithSpaces.trim());
-      expect(name.getValue()).toBe('Jane   Smith'); // Mantém espaços internos
+      expect(name.getValue()).toBe('Jane   Smith');
     });
   });
 });
