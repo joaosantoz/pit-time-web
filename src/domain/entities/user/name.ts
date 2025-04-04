@@ -14,15 +14,15 @@ export class Name {
 
   private static validateInput(name: string): void {
     if (!name.trim() || name.trim().length === 0) {
-      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
+      throw new DomainValidationError(ValidationMessage.EMPTY('Name'));
     }
 
     if (name.length < NameLength.MIN) {
-      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, PasswordLength.MIN));
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH('Name', PasswordLength.MIN));
     }
 
     if (name.length > NameLength.MAX) {
-      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, PasswordLength.MAX));
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH('Name', PasswordLength.MAX));
     }
   }
 

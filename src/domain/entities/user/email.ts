@@ -16,23 +16,23 @@ export class Email {
 
   private static validateInput(email: string): void {
     if (email.includes(' ')) {
-      throw new DomainValidationError(ValidationMessage.NO_SPACES(this.name));
+      throw new DomainValidationError(ValidationMessage.NO_SPACES('Email'));
     }
 
     if (!email || email.length === 0) {
-      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
+      throw new DomainValidationError(ValidationMessage.EMPTY('Email'));
     }
 
     if (email.length < EmailLength.MIN) {
-      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, EmailLength.MIN));
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH('Email', EmailLength.MIN));
     }
 
     if (email.length > EmailLength.MAX) {
-      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, EmailLength.MAX));
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH('Email', EmailLength.MAX));
     }
 
     if (!Email.VALIDATION_REGEX.test(email)) {
-      throw new DomainValidationError(ValidationMessage.INVALID(this.name));
+      throw new DomainValidationError(ValidationMessage.INVALID('Email'));
     }
   }
 

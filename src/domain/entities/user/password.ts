@@ -14,19 +14,19 @@ export class Password {
 
   private static validateInput(password: string): void {
     if (password.includes(' ')) {
-      throw new DomainValidationError(ValidationMessage.NO_SPACES(this.name));
+      throw new DomainValidationError(ValidationMessage.NO_SPACES('Password'));
     }
 
     if (!password || password.length === 0) {
-      throw new DomainValidationError(ValidationMessage.EMPTY(this.name));
+      throw new DomainValidationError(ValidationMessage.EMPTY('Password'));
     }
 
     if (password.length < PasswordLength.MIN) {
-      throw new DomainValidationError(ValidationMessage.MIN_LENGTH(this.name, PasswordLength.MIN));
+      throw new DomainValidationError(ValidationMessage.MIN_LENGTH('Password', PasswordLength.MIN));
     }
 
     if (password.length > PasswordLength.MAX) {
-      throw new DomainValidationError(ValidationMessage.MAX_LENGTH(this.name, PasswordLength.MAX));
+      throw new DomainValidationError(ValidationMessage.MAX_LENGTH('Password', PasswordLength.MAX));
     }
 
     if (!/[a-z]/.test(password)) {
