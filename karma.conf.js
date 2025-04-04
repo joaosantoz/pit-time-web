@@ -11,7 +11,14 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
 
-    files: ['src/**/*.ts', 'src/**/*.spec.ts'],
+    mime: {
+      'text/x-typescript': ['ts']
+    },
+
+    files: [
+      { pattern: 'src/**/*.ts', type: 'module', included: false },
+      { pattern: 'src/**/*.spec.ts', type: 'module' }
+    ],
 
     preprocessors: {
       'src/app/**/!(*.spec|*.mock|*.module).ts': ['coverage']
